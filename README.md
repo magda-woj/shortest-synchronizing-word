@@ -2,7 +2,7 @@
 
 ## Description
 
-This program checks if a given deterministic finite automaton (DFA) has a synchronizing word, and if so, it outputs the shortest such word. A synchronizing word is a sequence of input symbols that, when applied to any state of the DFA, leads to a specific state. If the DFA is not synchronizing, the program outputs the string `"automaton isn't synchronizing"`.
+This program checks if a given deterministic finite automaton (DFA) has a synchronizing word, and if so, it outputs the shortest such word. A synchronizing word is a sequence of input symbols that, when applied to any state of the DFA, leads to a specific state. If the DFA is not synchronizing, the program outputs the string `"automaton isn't synchronizing"`. The program uses the fact that shortest synchronizing word of a DFA is determined by the shortest path in that DFA's power automaton.
 
 ## Input File Format
 
@@ -15,12 +15,12 @@ The input file must describe a valid DFA and follow this format:
    - `c` is a `Char` representing a symbol from the alphabet, and `m` is an integer representing the target state (0 to `n-1`).
    - This means that the transition function sends state `i` to state `m` using symbol `c` (i.e., `transitionFunction(i, c) = m`).
 
-## Example Input
+### Example Input
 
 3 ab [[('a', 1), ('b',1)], [('a', 1), ('b', 2)], [('a', 0), ('b', 1)]]
 
 
-### Explanation:
+### Example Explanation:
 - The DFA has 3 states (`0`, `1`, `2`).
 - The alphabet consists of two symbols: `a` and `b`.
 - The transition function is defined as:
@@ -35,7 +35,6 @@ The input file must describe a valid DFA and follow this format:
 
 ## Notes
 
-- The `main` function and file handling assume that states are numbered from `0` to `n-1`.
-- However, the functions implemented to find the shortest synchronizing word only require that the type representing states is comparable.
+- The `main` function and file handling assume that states are numbered from `0` to `n-1`. However, the functions implemented to find the shortest synchronizing word only require that the type representing states is comparable.
 
 

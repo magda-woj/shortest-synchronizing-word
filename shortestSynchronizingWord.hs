@@ -26,6 +26,7 @@ powerAutomaton :: (Ord state) => DFA state -> DFA [state]
 powerAutomaton (DFA sts al trans) = let powerStates = nonemptySublists sts in
     DFA powerStates al (\xs a -> uniqueSorted (quickSort (map (`trans` a) xs)))
 
+-- for a pair (state, word), returns a list of pairs in the form (neighboring state, word ++ [the letter used to transition from the state to this neighbor])
 neighbours :: Eq state => DFA state -> (state, String) -> [(state, String)]
 neighbours (DFA sts al trans) (st, word) =  map (\ c -> (trans st c, word ++ [c])) al
 
