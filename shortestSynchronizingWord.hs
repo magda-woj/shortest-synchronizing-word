@@ -30,27 +30,24 @@ powerAutomaton (DFA sts al trans) = let powerStates = nonemptySublists sts in
 neighbours :: Eq state => DFA state -> (state, String) -> [(state, String)]
 neighbours (DFA sts al trans) (st, word) =  map (\ c -> (trans st c, word ++ [c])) al
 
-bfs :: Eq state => DFA state -> [state] -> [(state, String)] -> [(state, String)]
-bfs _ _ [] = []
-bfs automaton visited (h:queue)
-    | fst h `notElem` visited = h : bfs automaton (fst h : visited) (queue ++ filter (\(st, word) -> st `notElem` visited) (neighbours automaton h))
-    | otherwise = bfs automaton visited queue
+-- works just like normal BFS, except in the queue and output we have pairs (state, word_that_leads_from_source_to_state) 
+wordTrackingBFS :: Eq state => DFA state -> [state] -> [(state, String)] -> [(state, String)]
+wordTrackingBFS _ _ [] = []
+wordTrackingBFS automaton visited (h:queue)
+    | fst h `notElem` visited = h : wordTrackingBFS automaton (fst h : visited) (queue ++ filter (\(st, word) -> st `notElem` visited) (neighbours automaton h))
+    | otherwise = wordTrackingBFS automaton visited queue
 
-
+-- the appropriate call of the BFS written above to get the paths in the power automaton of the automaton that is the argument.
 pathWords :: Ord state => DFA state -> [([state], String)]
 pathWords automaton = let powAuto = powerAutomaton automaton in
-    bfs powAuto [] [(head (states powAuto), "")]
+    wordTrackingBFS powAuto [] [(head (states powAuto), "")]
 
+-- returns only synchronizing words, meaning those that are paths in the power automaton from the set of all states to a singleton.
 synchronizingWords :: Ord state => DFA state -> [String]
 synchronizingWords automaton = map snd (filter (\x -> length (fst x) == 1) (pathWords automaton))
 
 shorter :: String -> String -> String
 shorter s1 s2 = if length s1 <= length s2 then s1 else s2
-
-shortestSynchronizingWord :: Ord state => DFA state -> String
-shortestSynchronizingWord automaton = let synchro = synchronizingWords automaton in
-    foldr shorter (head synchro) synchro
-
 
 shortestWord :: [String] -> String
 shortestWord xs = foldr shorter (head xs) xs
